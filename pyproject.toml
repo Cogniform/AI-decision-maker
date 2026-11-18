@@ -32,6 +32,16 @@ exclude = ["data*"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 
+[tool.uv]
+# 锁文件源固定为官方 PyPI，且此处优先级高于本机 ~/AppData/Roaming/uv/uv.toml。
+# 不加这一段时，本机全局 index-url 指向镜像，任何一次 `uv lock` 都会把 uv.lock
+# 的 registry 整片改写成镜像源，境外 CI 拉镜像会 tcp 超时。
+# 注：`default-index` 字段 uv 0.11 不认（报 unknown field 并整体忽略该节），
+# 必须用下面的 [[tool.uv.index]] 表。
+[[tool.uv.index]]
+name = "pypi"
+url = "https://pypi.org/simple"
+default = true
 [tool.ruff]
 # 不碰 Markdown 里嵌的 Python 片段：文档与笔记正文不属格式化范围
 extend-exclude = ["*.md"]
